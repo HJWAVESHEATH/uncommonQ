@@ -1,0 +1,62 @@
+<section class="gauge-section">
+  <h2 class="section-title">Global Market Coherence</h2>
+  <p class="section-sub">Live synchronization index across major exchanges.</p>
+  <div id="coherenceGauge"></div>
+  <p id="coherenceTime"></p>
+</section>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+async function updateCoherence(){
+  const res = await fetch("https://yourdomain.com/data/coherence.json");
+  const d = await res.json();
+  const val = d.coherence;
+  Plotly.newPlot("coherenceGauge",[{
+    type:"indicator",mode:"gauge+number",
+    value:val,
+    gauge:{
+      axis:{range:[0,100]},
+      bar:{color:val>70?"#4cd1f3":val>40?"#f9c74f":"#f66"},
+      steps:[
+        {range:[0,40],color:"rgba(255,102,102,0.3)"},
+        {range:[40,70],color:"rgba(249,199,79,0.3)"},
+        {range:[70,100],color:"rgba(76,209,243,0.3)"}
+      ]
+    }
+  }],{
+    paper_bgcolor:"rgba(0,0,0,0)",
+    plot_bgcolor:"rgba(0,0,0,0)",
+    margin:{t:0,b:0,l:0,r:0},
+    font:{color:"#f9f9f9"}
+  },{displayModeBar:false});
+  document.getElementById("coherenceTime").textContent =
+    "Updated: "+new Date(d.timestamp).toLocaleTimeString();
+}
+updateCoherence();
+setInterval(updateCoherence,60000); // refresh every minute
+</script>
+
+<div id="coherenceChart"></div>
+<script>
+async function drawHistory(){
+  const res = await fetch("https://yourdomain.com/data/coherence_history.json");
+  const data = await res.json();
+  const dates = data.map(d=>d.date);
+  const values = data.map(d=>d.coherence);
+  Plotly.newPlot("coherenceChart", [{
+    x: dates,
+    y: values,
+    type: "scatter",
+    mode: "lines+markers",
+    line: {width:2,color:"#4cd1f3"}
+  }], {
+    title: "Daily Coherence History",
+    paper_bgcolor:"rgba(0,0,0,0)",
+    plot_bgcolor:"rgba(0,0,0,0)",
+    font:{color:"#f9f9f9"},
+    xaxis:{title:"Date"},
+    yaxis:{title:"Coherence (%)",range:[0,100]}
+  }, {displayModeBar:false});
+}
+drawHistory();
+</script>

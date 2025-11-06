@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Systems Map | Hjermstad Quant</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<canvas id="resonantGrid"></canvas>
+
+<header class="navbar">
+  <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="../portfolio/index.html">Portfolio</a>
+    <a href="index.html" class="active">Readiness Tools</a>
+  </nav>
+  <button id="themeToggle" aria-label="toggle theme">☀️</button>
+</header>
+
+<section class="readiness-hero">
+  <h1>Systems Map</h1>
+  <p>Explore how Hjermstad Quant architectures interconnect.
+     Click a node — or click a <em>“Combine with”</em> link — to traverse the network.</p>
+</section>
+
+<section class="map-body">
+  <div id="systemsMap" class="plot"></div>
+
+  <!-- Pop-up Card -->
+  <div id="sysPopup" class="sys-popup" style="display:none;">
+    <button id="closePopup" class="close-btn">×</button>
+    <h2 id="sysName"></h2>
+    <p id="sysDomain"></p>
+    <p id="sysDesc"></p>
+    <div id="sysUse"></div>
+    <div id="sysCombine"></div>
+  </div>
+</section>
+
+<footer>
+  <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+</footer>
+
+<script src="../assets/js/grid-animation.js"></script>
+<script src="../assets/js/theme-toggle.js"></script>
+<script>
+document.getElementById("year").textContent=new Date().getFullYear();
+
+/* =======================================================
+   Hjermstad Quant • Systems Map v4
+   - Clickable "Combine With" traversal
+========================================================= */
+
+const systems=[
+  {id:0,name:"Vault Logic Processor",domain:"Computation",
+    desc:"Core engine translating resonance equations into hardware logic.",
+    uses:["Real-time coherence processing","Adaptive throughput management"],
+    combines:[3,4]},
+  {id:1,name:"Resonant Node Probe",domain:"Sensing",
+    desc:"Measurement node for phase, frequency, and environmental coherence.",
+    uses:["Field sensing arrays","Acoustic/magnetic resonance capture"],
+    combines:[0,2]},
+  {id:2,name:"Hjermstad Constant",domain:"Mathematics",
+    desc:"Foundational constant anchoring resonance equations.",
+    uses:["Equation standardization","Cross-domain calibration"],
+    combines:[1,3]},
+  {id:3,name:"Coherence Vault",domain:"Data Integrity",
+    desc:"Repository maintaining validated resonance data and proofs.",
+    uses:["Governance storage","Audit trail verification"],
+    combines:[0,4]},
+  {id:4,name:"Sentinel Manager",domain:"Orchestration",
+    desc:"Orchestrator overseeing throughput and node coordination.",
+    uses:["Task routing","Load monitoring"],
+    combines:[3,6]},
+  {id:5,name:"Hyperbinary Miner",domain:"Computation",
+    desc:"GPU/CPU mining engine leveraging coherence-first logic.",
+    uses:["Energy-efficient mining","Dual-layer CPU/GPU coherence"],
+    combines:[4,6]},
+  {id:6,name:"Resonance OS",domain:"Infrastructure",
+    desc:"Full-stack layer unifying sensing, computation, and governance.",
+    uses:["Central orchestration","Cross-system synchronization"],
+    combines:[0,1,4]}
+];
+
+const links=[
+  {source:0,target:3},
+  {source:0,target:1},
+  {source:1,target:2},
+  {source:3,target:4},
+  {source:4,target:5},
+  {source:5,target:6},
+  {source:2,target:6}
+];
+
+// coordinates
+const N=systems.length,θ=2*Math.PI/N;
+const x=[],y=[],color=[];
+systems.forEach((s,i)=>{
+  x.push(Math.cos(i*θ)); y.push(Math.sin(i*θ));
+  const pal=["#4cd1f3","#f9c74f","#9b7fe3","#d4af37"];
+  color.push(pal[i%pal.length]);
+});
+
+function buildLinks(highlightIds=[]){
+  return links.map(l=>{
+    const hl=highlightIds.includes(l.source)&&highlightIds.includes(l.target);
+    return{
+      type:"scatter",mode:"lines",
+      x:[x[l.source],x[l.target],null],
+      y:[y[l.source],y[l.target],null],
+      line:{width:hl?3:1,color:hl?"#d4af37":"rgba(255,255,255,0.2)"},
+      hoverinfo:"none"
+    };
+  });
+}
+
+const nodeTrace={
+  type:"scatter",mode:"markers+text",
+  x:x,y:y,text:systems.map(s=>s.name),
+  hoverinfo:"text",
+  marker:{size:18,color:color,line:{width:1,color:"#222"}},
+  textposition:"top center",
+  textfont:{size:10,color:"#f9f9f9"}
+};
+
+function renderMap(highlightIds=[]){
+  Plotly.react("systemsMap",[...buildLinks(highlightIds),nodeTrace],
+    {paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",
+     xaxis:{visible:false},yaxis:{visible:false},margin:{t:0,l:0,r:0,b:0}},
+    {displayModeBar:false});
+}
+
+renderMap();
+
+const popup=document.getElementById("sysPopup"),
+      nameEl=document.getElementById("sysName"),
+      domEl=document.getElementById("sysDomain"),
+      descEl=document.getElementById("sysDesc"),
+      useEl=document.getElementById("sysUse"),
+      combEl=document.getElementById("sysCombine");
+
+function focusNode(idx){
+  const s=systems[idx];
+  const hlIds=[idx,...links.filter(l=>l.source===idx||l.target===idx)
+                        .flatMap(l=>[l.source,l.target])];
+  renderMap(hlIds);
+
+  nameEl.textContent=s.name;
+  domEl.textContent="Domain: "+s.domain;
+  descEl.textContent=s.desc;
+  useEl.innerHTML="<strong>Applications:</strong><ul>"+s.uses.map(u=>`<li>${u}</li>`).join("")+"</ul>";
+
+  // clickable combine-with list
+  combEl.innerHTML="<strong>Combine with:</strong><ul>"+
+    s.combines.map(id=>`<li><a href='#' data-id='${id}' class='combine-link'>${systems[id].name}</a></li>`).join("")+
+    "</ul>";
+
+  popup.style.display="block";
+  popup.scrollIntoView({behavior:"smooth"});
+}
+
+const mapDiv=document.getElementById("systemsMap");
+mapDiv.on('plotly_click',d=>focusNode(d.points[0].pointIndex));
+document.getElementById("closePopup").onclick=()=>popup.style.display="none";
+
+// delegate click inside popup for traversal
+popup.addEventListener("click",e=>{
+  if(e.target.classList.contains("combine-link")){
+    e.preventDefault();
+    const targetId=parseInt(e.target.getAttribute("data-id"));
+    focusNode(targetId);
+  }
+});
+</script>
+</body>
+</html>

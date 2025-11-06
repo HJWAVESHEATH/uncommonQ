@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Ops Dashboard | Hjermstad Quant</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { background:#0b1a2a; color:#f9f9f9; }
+    .dashboard-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:2rem;
+      max-width:1200px;
+      margin:3rem auto;
+      padding:2rem;
+    }
+    .card {
+      background:#1a2535;
+      border-radius:1rem;
+      padding:1.5rem;
+      box-shadow:0 2px 20px rgba(0,0,0,0.25);
+    }
+    .card h2 { font-family:"Merriweather",serif; font-size:1.1rem; margin-bottom:1rem; }
+    #sysStats { margin-top:3rem; }
+  </style>
+</head>
+<body>
+<!-- ===== SIMPLE PASSWORD GATE ===== -->
+<div id="lockscreen"
+     style="position:fixed;top:0;left:0;width:100%;height:100%;
+            background:#0b1a2a;display:flex;align-items:center;
+            justify-content:center;flex-direction:column;z-index:9999;">
+  <h2 style="color:#f9f9f9;font-family:'Merriweather',serif;">
+    Internal Access Required
+  </h2>
+  <input id="passInput" type="password" placeholder="Enter passphrase"
+         style="padding:0.6rem 1rem;border:none;border-radius:6px;margin-top:1rem;width:240px;text-align:center;">
+  <button id="unlockBtn" class="btn gold" style="margin-top:1rem;">Unlock</button>
+  <p id="msg" style="color:#f9f9f9;font-size:0.9rem;margin-top:0.5rem;"></p>
+</div>
+
+  <h1 style="text-align:center;margin-top:2rem;">Internal Ops Dashboard</h1>
+  <p style="text-align:center;color:#ccc;">Private monitoring of site activity, bandwidth, and throughput</p>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <h2>Site Overview</h2>
+      <ul id="siteOverview">
+        <li>Pages Indexed: <span id="pageCount">–</span></li>
+        <li>Portfolio Projects: <span id="projectCount">–</span></li>
+        <li>Insights Articles: <span id="insightCount">–</span></li>
+        <li>Field Notes Published: <span id="noteCount">–</span></li>
+        <li>Last Update: <span id="lastUpdate">–</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Content Throughput</h2>
+      <div id="throughputChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Connection Bandwidth (Simulated)</h2>
+      <div id="bandwidthChart"></div>
+    </div>
+  </div>
+
+  <div id="sysStats" class="card" style="max-width:1200px;margin:auto;">
+    <h2>System Status Logs</h2>
+    <pre id="sysLog" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;white-space:pre-wrap;"></pre>
+  </div>
+<script>
+/* ======================================
+   Simple Front-End Password Protection
+   --------------------------------------
+   - Stores a SHA-256 hash in browser memory.
+   - Use only for local / private hosting.
+   - Not secure for production or secrets.
+   - Change PASS_HASH when you change password.
+====================================== */
+
+// === CONFIG: update with your chosen phrase ===
+// To generate a new hash: open browser console and run
+//   await crypto.subtle.digest("SHA-256", new TextEncoder().encode("YourPassword"))
+//   then convert the returned buffer to hex.
+const PASS_HASH = "8b49e2bba9...";  // <-- replace with your own full SHA-256 hash
+
+async function hash(str){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+
+const lock = document.getElementById("lockscreen");
+const input = document.getElementById("passInput");
+const msg = document.getElementById("msg");
+
+document.getElementById("unlockBtn").addEventListener("click", async ()=>{
+  const val = input.value.trim();
+  const hashed = await hash(val);
+  if(hashed === PASS_HASH){
+    lock.remove();        // allow page to render
+    sessionStorage.setItem("hjermstadAuth","ok");  // remember session
+  } else {
+    msg.textContent = "Access denied.";
+    input.value = "";
+  }
+});
+
+// auto-unlock if session already validated
+if(sessionStorage.getItem("hjermstadAuth")==="ok") lock.remove();
+</script>
+
+  <script>
+    /* ======================================================
+       Hjermstad Quant – Internal Ops Dashboard Script
+       ------------------------------------------------------
+       Sections:
+       1. Simulate content metrics
+       2. Generate throughput and bandwidth charts
+       3. Simulate system status feed
+       ------------------------------------------------------
+       Replace simulated data with real API calls or
+       local log reads when ready.
+    ====================================================== */
+
+    // === 1. Content Metrics (replace with live crawler counts) ===
+    const metrics = {
+      pages: 12,
+      projects: 5,
+      insights: 3,
+      notes: 14,
+      lastUpdate: new Date().toLocaleString()
+    };
+    document.getElementById("pageCount").textContent = metrics.pages;
+    document.getElementById("projectCount").textContent = metrics.projects;
+    document.getElementById("insightCount").textContent = metrics.insights;
+    document.getElementById("noteCount").textContent = metrics.notes;
+    document.getElementById("lastUpdate").textContent = metrics.lastUpdate;
+
+    // === 2. Throughput Chart ===
+    // Simulated: entries processed per day
+    const days = Array.from({length:14},(_,i)=>`Day ${i+1}`);
+    const throughput = days.map(()=>Math.round(Math.random()*10+5));
+    Plotly.newPlot("throughputChart", [{
+      x: days,
+      y: throughput,
+      type:"bar",
+      marker:{color:"#4cd1f3"},
+      name:"Content Commits"
+    }], {
+      margin:{t:30,l:40,r:20,b:40},
+      paper_bgcolor:"rgba(0,0,0,0)",
+      plot_bgcolor:"rgba(0,0,0,0)",
+      font:{color:"#f9f9f9"},
+      yaxis:{title:"Updates / Day"}
+    }, {displayModeBar:false});
+
+    // === 3. Bandwidth Monitor (Simulated) ===
+    // Replace these with real throughput metrics or API bandwidth logs
+    const t = Array.from({length:60},(_,i)=>i);
+    const inbound = t.map(()=>Math.random()*50+100);
+    const outbound = t.map(()=>Math.random()*30+70);
+
+    Plotly.newPlot("bandwidthChart", [
+      {x:t,y:inbound,mode:"lines",name:"Inbound kB/s",line:{color:"#4cd1f3"}},
+      {x:t,y:outbound,mode:"lines",name:"Outbound kB/s",line:{color:"#d4af37"}}
+    ], {
+      margin:{t:30,l:40,r:20,b:40},
+      paper_bgcolor:"rgba(0,0,0,0)",
+      plot_bgcolor:"rgba(0,0,0,0)",
+      font:{color:"#f9f9f9"},
+      yaxis:{title:"kB/s"},
+      xaxis:{title:"Seconds"}
+    }, {displayModeBar:false});
+
+    // === 4. Simulated System Log Feed ===
+    const log = document.getElementById("sysLog");
+    function addLog(msg){
+      const stamp = new Date().toLocaleTimeString();
+      log.textContent = `[${stamp}] ${msg}\n` + log.textContent;
+    }
+    setInterval(()=>{
+      const events=[
+        "Heartbeat OK",
+        "Revalidated metrics cache",
+        "Checked 3 external links",
+        "Synced local backup",
+        "Updated coherence baseline"
+      ];
+      addLog(events[Math.floor(Math.random()*events.length)]);
+    }, 5000);
+  </script>
+</body>
+</html>

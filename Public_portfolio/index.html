@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brandon Hjermstad — Quantitative Systems Architect</title>
+  <meta name="description"
+        content="Brandon Hjermstad — Quantitative Systems Architect building transparent, responsible, and intelligent analytical systems that unite finance, data, and human decision-making." />
+  <meta property="og:title" content="Brandon Hjermstad — Quantitative Systems Architect" />
+  <meta property="og:description" content="Quantitative integrity • Responsible AI • Financial Systems Intelligence" />
+  <meta property="og:type" content="website" />
+  <link href="assets/css/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Merriweather:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <canvas id="resonantGrid"></canvas>
+
+  <header class="navbar">
+    <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="portfolio/index.html">Portfolio</a>
+      <a href="insights/ai-with-accountability.html">Insights</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button id="themeToggle" aria-label="toggle theme">☀️</button>
+  </header>
+
+  <section class="hero">
+    <h1>Brandon Hjermstad</h1>
+    <h2>Quantitative Systems Architect</h2>
+    <p>Building transparent, responsible, and intelligent analytical systems that unite finance, data, and human decision-making.</p>
+    <div class="cta-buttons">
+      <a href="portfolio/index.html" class="btn">View My Work</a>
+      <a href="insights/ai-with-accountability.html" class="btn gold">Read Insights</a>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="pillar">
+      <h3>Responsible AI</h3>
+      <p>Designing explainable, auditable models that enhance human judgment instead of replacing it.</p>
+    </div>
+    <div class="pillar">
+      <h3>Quantitative Integrity</h3>
+      <p>Ensuring every model balances like a ledger — measurable, traceable, and reliable.</p>
+    </div>
+    <div class="pillar">
+      <h3>Financial Literacy</h3>
+      <p>Rooted in accounting and business fundamentals, connecting analytics to real-world decision-making.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+    <p><a href="https://www.linkedin.com/in/your-linkedin-placeholder">LinkedIn</a> • <a href="mailto:contact@hjermstadquant.com">contact@hjermstadquant.com</a></p>
+  </footer>
+
+  <script src="assets/js/grid-animation.js"></script>
+  <script src="assets/js/theme-toggle.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Process Architecture | Brandon Hjermstad</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <canvas id="resonantGrid"></canvas>
+
+  <header class="navbar">
+    <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="index.html" class="active">Portfolio</a>
+      <a href="../insights/ai-with-accountability.html">Insights</a>
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+    <button id="themeToggle" aria-label="toggle theme">☀️</button>
+  </header>
+
+  <section class="process-hero">
+    <h1>Process Architecture</h1>
+    <p>The operational backbone behind every quantitative system I design.</p>
+  </section>
+
+  <section class="process-body">
+    <p>
+      Each framework follows a repeatable, auditable pipeline—engineered for clarity, version control,
+      and measurable performance.  The schematic below shows the flow of capability, not the proprietary logic.
+    </p>
+
+    <div id="flowchart"></div>
+
+    <h2>Pipeline Overview</h2>
+    <ul class="process-list">
+      <li><strong>1. Data Ingestion:</strong> structured + unstructured sources, automated integrity checks, metadata tagging.</li>
+      <li><strong>2. Feature Engineering:</strong> statistical shaping, signal isolation, and business-context encoding.</li>
+      <li><strong>3. Model Construction:</strong> modular ML algorithms tested against synthetic and live environments.</li>
+      <li><strong>4. Validation Layer:</strong> coherence diagnostics, drift detection, and performance stress-testing.</li>
+      <li><strong>5. Governance & Audit:</strong> versioned documentation, reproducible scripts, accountability ledger.</li>
+      <li><strong>6. Deployment & Feedback:</strong> continuous monitoring, adaptive learning loops, and executive dashboards.</li>
+    </ul>
+
+    <p>
+      The strength of this architecture is transparency: every component has a measurable output, a clear owner, and
+      a feedback path.  This allows teams to trust the system without having to “believe in” the model.
+    </p>
+
+    <p class="confidential">
+      *Diagram shows structural capability only—specific algorithms, parameterizations, and optimization routines are proprietary.*
+    </p>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+  </footer>
+
+  <script src="../assets/js/grid-animation.js"></script>
+  <script src="../assets/js/theme-toggle.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // --- simple flowchart using Plotly Sankey ---
+    const data = [{
+      type: "sankey",
+      orientation: "h",
+      node: {
+        pad: 15,
+        thickness: 20,
+        line: { color: "rgba(255,255,255,0.1)", width: 1 },
+        label: [
+          "Data Ingestion",
+          "Feature Engineering",
+          "Model Construction",
+          "Validation Layer",
+          "Governance & Audit",
+          "Deployment & Feedback"
+        ],
+        color: [
+          "#4cd1f3","#68e0c6","#d4af37","#9b7fe3","#4cd1f3","#68e0c6"
+        ]
+      },
+      link: {
+        source: [0,1,2,3,4],
+        target: [1,2,3,4,5],
+        value: [5,4,3,3,2],
+        color: "rgba(76,209,243,0.3)"
+      }
+    }];
+
+    Plotly.newPlot('flowchart', data, {
+      margin:{t:10,l:10,r:10,b:10},
+      paper_bgcolor:'rgba(0,0,0,0)',
+      plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#f9f9f9'}
+    }, {displayModeBar:false});
+  </script>
+</body>
+</html>
+tml>

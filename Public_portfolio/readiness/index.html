@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readiness Tools | Hjermstad Quant</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<canvas id="resonantGrid"></canvas>
+
+<header class="navbar">
+  <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="../portfolio/index.html">Portfolio</a>
+    <a href="index.html" class="active">Readiness Tools</a>
+  </nav>
+  <button id="themeToggle" aria-label="toggle theme">☀️</button>
+</header>
+
+<section class="readiness-hero">
+  <h1>Readiness Tools & System Map</h1>
+  <p>Explore how Hjermstad Quant diagnostics and architectures combine to create measurable coherence across analytics, AI, and operations.</p>
+</section>
+
+<section class="readiness-body">
+  <div class="tool-grid">
+    <a class="tool-card" href="governance.html">
+      <h2>Governance Gauge</h2>
+      <p>Assess control, accountability, and compliance readiness.</p>
+    </a>
+    <a class="tool-card" href="transparency.html">
+      <h2>AI Transparency Gauge</h2>
+      <p>Evaluate interpretability, bias control, and ethical robustness.</p>
+    </a>
+    <a class="tool-card" href="systems-map.html">
+      <h2>Systems Map</h2>
+      <p>See how all Hjermstad Quant logic shapes and programs interconnect to remove bottlenecks.</p>
+    </a>
+  </div>
+
+  <div id="coherenceIndex" class="plot"></div>
+  <p class="section-sub">Composite Coherence Index — simulated blend of Governance and Transparency metrics.</p>
+</section>
+
+<footer>
+  <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+</footer>
+
+<script src="../assets/js/grid-animation.js"></script>
+<script src="../assets/js/theme-toggle.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// --- Simulated composite gauge (Governance + Transparency) ---
+const gov = 68, trans = 72;   // placeholder means
+const coherence = ((gov + trans) / 2).toFixed(1);
+Plotly.newPlot("coherenceIndex", [{
+  type:"indicator",mode:"gauge+number",
+  value:coherence,
+  gauge:{
+    axis:{range:[0,100]},
+    bar:{color:"#4cd1f3"},
+    steps:[
+      {range:[0,40],color:"rgba(255,102,102,0.3)"},
+      {range:[40,70],color:"rgba(249,199,79,0.3)"},
+      {range:[70,100],color:"rgba(76,209,243,0.3)"}
+    ]
+  }
+}],{
+  paper_bgcolor:"rgba(0,0,0,0)",
+  plot_bgcolor:"rgba(0,0,0,0)",
+  margin:{t:20,b:20,l:20,r:20},
+  font:{color:"#f9f9f9"}
+},{displayModeBar:false});
+</script>
+</body>
+</html>
