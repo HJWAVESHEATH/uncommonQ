@@ -1,4 +1,0 @@
-python backend/data_pipelines/market_coherence.py
-python backend/data_pipelines/resonance_energy.py
-rsync -av public/data/ hjermstadquant.com:/var/www/data/
-echo "$(date), coherence.py run complete, exit 0" >> backend/logs/job_log.csv
