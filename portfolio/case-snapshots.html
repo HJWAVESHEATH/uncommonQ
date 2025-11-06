@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Snapshots | Brandon Hjermstad</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<canvas id="resonantGrid"></canvas>
+
+<header class="navbar">
+  <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="index.html" class="active">Portfolio</a>
+    <a href="../insights/ai-with-accountability.html">Insights</a>
+    <a href="../about.html">About</a>
+    <a href="../contact.html">Contact</a>
+  </nav>
+  <button id="themeToggle" aria-label="toggle theme">☀️</button>
+</header>
+
+<section class="cases-hero">
+  <h1>Case Snapshots</h1>
+  <p>Interactive network of quantitative narratives—each a node linking mathematics, finance, socioeconomics, and physical systems.</p>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Risk Modeling">Risk Modeling</button>
+    <button class="filter-btn" data-filter="Forecasting">Forecasting</button>
+    <button class="filter-btn" data-filter="Governance Automation">Governance</button>
+    <button class="filter-btn" data-filter="Analytics Infrastructure">Infrastructure</button>
+    <button class="filter-btn" data-filter="Signal Analysis">Signal</button>
+  </div>
+</section>
+
+<section id="caseGrid" class="cases-body">
+
+  <!-- Each card now contains a .branch section that expands -->
+  <article class="case" data-category="Risk Modeling" data-tags="#coherence #audit">
+    <h2>Credit Portfolio Model Validation</h2>
+    <p class="objective"><strong>Objective:</strong> Verify predictive accuracy and compliance with risk policy.</p>
+    <p class="outcome"><strong>Outcome:</strong> Validation cycle reduced from 14 days → 6 hours; audit-trail = 100 % reproducible.</p>
+    <div class="branch">
+      <h3>Logic Narrative</h3>
+      <ul>
+        <li><strong>Mathematical Core:</strong> Time-series residual analysis → spectral stability → coherence metric.</li>
+        <li><strong>Economic Tie-In:</strong> Stability = risk predictability; capital allocation confidence ↑.</li>
+        <li><strong>Physical Analogy:</strong> Wave interference → risk interference; resonance → market equilibrium.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="case" data-category="Forecasting" data-tags="#signal #pattern">
+    <h2>Demand Forecast Coherence Alignment</h2>
+    <p class="objective"><strong>Objective:</strong> Detect phase-locked demand cycles for inventory balance.</p>
+    <p class="outcome"><strong>Outcome:</strong> Forecast error ↓ 22 %; stability ↑ across seasonal shifts.</p>
+    <div class="branch">
+      <h3>Logic Narrative</h3>
+      <ul>
+        <li><strong>Mathematical:</strong> FFT → phase-correlation filter.</li>
+        <li><strong>Economic:</strong> Supply chain harmonics = cash-flow rhythm.</li>
+        <li><strong>Physical:</strong> Oscillator lock-in → predictive resonance.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="case" data-category="Governance Automation" data-tags="#ledger #audit">
+    <h2>Automated Audit-Trail Generator</h2>
+    <p class="objective"><strong>Objective:</strong> One-click reproducibility of model lineage.</p>
+    <p class="outcome"><strong>Outcome:</strong> Manual documentation ↓ 85 %; 100 % traceability.</p>
+    <div class="branch">
+      <h3>Logic Narrative</h3>
+      <ul>
+        <li><strong>Mathematical:</strong> Version-controlled checksum verification.</li>
+        <li><strong>Socioeconomic:</strong> Trust & accountability infrastructure.</li>
+        <li><strong>Physics Parallel:</strong> Conservation of information ↔ energy balance.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="case" data-category="Signal Analysis" data-tags="#resonance #field">
+    <h2>Resonance Field Mapping Prototype</h2>
+    <p class="objective"><strong>Objective:</strong> Visualize harmonic structures in ambient data fields.</p>
+    <p class="outcome"><strong>Outcome:</strong> Identified stable nodes → potential for sensing tech.</p>
+    <div class="branch">
+      <h3>Logic Narrative</h3>
+      <ul>
+        <li><strong>Math:</strong> Multi-layer FFT mesh → 3D phase-alignment volume.</li>
+        <li><strong>Finance:</strong> Market wave-forms mirror acoustic phase → predictive volatility bands.</li>
+        <li><strong>Physics:</strong> Resonance topology as energy-information conduit.</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Stub: add more cases -->
+</section>
+
+<footer>
+  <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+</footer>
+
+<script src="../assets/js/grid-animation.js"></script>
+<script src="../assets/js/theme-toggle.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* === Category Filtering === */
+const buttons = document.querySelectorAll(".filter-btn");
+const cards = document.querySelectorAll(".case");
+
+buttons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    buttons.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const cat = btn.dataset.filter;
+    cards.forEach(c=>{
+      c.style.display = (cat==="all" || c.dataset.category===cat) ? "block" : "none";
+    });
+  });
+});
+
+/* === Expand / Collapse Branches === */
+cards.forEach(card=>{
+  const branch = card.querySelector(".branch");
+  branch.style.display = "none";
+  card.addEventListener("mouseenter",()=>branch.style.display="block");
+  card.addEventListener("mouseleave",()=>branch.style.display="none");
+});
+</script>
+</body>
+</html>

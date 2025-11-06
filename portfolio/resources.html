@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Whitepapers & Repositories | Hjermstad Quant</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<canvas id="resonantGrid"></canvas>
+
+<header class="navbar">
+  <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="index.html">Portfolio</a>
+    <a href="resources.html" class="active">Whitepapers & Repositories</a>
+  </nav>
+  <button id="themeToggle" aria-label="toggle theme">☀️</button>
+</header>
+
+<section class="hero-section">
+  <h1>Whitepapers & Repositories</h1>
+  <p class="section-sub">
+    Explore Hjermstad Quant research, publications, and open-source resources.<br>
+    This index updates automatically from <code>resources.json</code>.
+  </p>
+</section>
+
+<section class="resources-grid" id="resourcesGrid">
+  <!-- cards injected by JS -->
+</section>
+
+<footer>
+  <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+</footer>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+async function loadResources() {
+  // ... existing fetch & rendering logic ...
+}
+loadResources();
+
+// --- ADD THIS PART DIRECTLY BELOW ---
+
+document.getElementById("filterBar").addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  document.querySelectorAll(".filter-bar button").forEach(b=>b.classList.remove("active"));
+  e.target.classList.add("active");
+  const filter = e.target.getAttribute("data-filter");
+  document.querySelectorAll(".resource-card").forEach(card=>{
+    const match = filter==="all" || card.dataset.domain===filter;
+    card.style.display = match ? "flex" : "none";
+  });
+});
+</script>
+
+<script src="../assets/js/grid-animation.js"></script>
+<script src="../assets/js/theme-toggle.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// ------------------------------
+// Load whitepaper data from JSON
+// ------------------------------
+async function loadResources() {
+  const container = document.getElementById("resourcesGrid");
+  try {
+    const res = await fetch("../data/resources.json?_=" + Date.now());
+    const items = await res.json();
+
+    if (!items.length) {
+      container.innerHTML = "<p style='text-align:center;'>No resources found.</p>";
+      return;
+    }
+
+    container.innerHTML = items.map(item => `
+      <div class="resource-card" data-domain="${item.domain || ''}">
+        <h2>${item.title}</h2>
+        <p>${item.description}</p>
+        <div class="links">
+          ${item.pdf ? `<a href="${item.pdf}" class="btn gold" download>Download PDF</a>` : ""}
+          ${item.repo ? `<a href="${item.repo}" target="_blank" class="btn cyan">GitHub Repo</a>` : ""}
+        </div>
+      </div>
+    `).join("");
+  } catch (err) {
+    console.error("Error loading resources:", err);
+    container.innerHTML = "<p style='text-align:center;color:red;'>Unable to load resource list.</p>";
+  }
+}
+loadResources();
+</script>
+</body>
+</html>

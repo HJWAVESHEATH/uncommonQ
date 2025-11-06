@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metrics & Benchmarks | Brandon Hjermstad</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <canvas id="resonantGrid"></canvas>
+
+  <header class="navbar">
+    <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="index.html" class="active">Portfolio</a>
+      <a href="../insights/ai-with-accountability.html">Insights</a>
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+    </nav>
+    <button id="themeToggle" aria-label="toggle theme">☀️</button>
+  </header>
+
+  <section class="metrics-hero">
+    <h1>Metrics & Benchmarks</h1>
+    <p>Evidence of precision, reliability, and value creation inside our quantitative frameworks.</p>
+  </section>
+
+  <section class="metrics-body">
+    <div class="metric">
+      <h2>Validation Turnaround Reduction</h2>
+      <div id="metric1" class="plot"></div>
+      <p class="caption">
+        Automated diagnostics compressed full model validation from <strong>14 days → 6 hours</strong>.
+        The chart shows cumulative time savings as automation scaled across projects.
+      </p>
+    </div>
+
+    <div class="metric">
+      <h2>Model Coherence Index (MCI)</h2>
+      <div id="metric2" class="plot"></div>
+      <p class="caption">
+        A proprietary metric adapted from signal analysis.
+        Stability above 0.9 indicates strong frequency-domain alignment between predicted and observed returns.
+      </p>
+    </div>
+
+    <div class="metric">
+      <h2>False-Positive Reduction</h2>
+      <div id="metric3" class="plot"></div>
+      <p class="caption">
+        Phase-sensitive anomaly filters cut false alerts by 47 %.
+        Each bar represents monthly alert counts before and after deployment.
+      </p>
+    </div>
+
+    <div class="metric">
+      <h2>Explainability Delta</h2>
+      <div id="metric4" class="plot"></div>
+      <p class="caption">
+        Narrative mapping improved model transparency from 0.68 → 0.92 on internal evaluation scales.
+        Executives could interpret model drivers without external translation.
+      </p>
+    </div>
+
+    <p class="confidential">
+      *Data shown are representative synthetic results demonstrating framework capability.
+      Real client and proprietary datasets remain protected.*
+    </p>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+  </footer>
+
+  <script src="../assets/js/grid-animation.js"></script>
+  <script src="../assets/js/theme-toggle.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // --- Plot 1: validation turnaround ---
+    Plotly.newPlot('metric1', [{
+      x:['Q1','Q2','Q3','Q4'],
+      y:[14,10,4,0.25],
+      type:'bar',
+      marker:{color:'#4cd1f3'}
+    }], {
+      yaxis:{title:'Days'},
+      xaxis:{title:'Quarter'},
+      margin:{t:20},
+      paper_bgcolor:'rgba(0,0,0,0)',
+      plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#f9f9f9'}
+    }, {displayModeBar:false});
+
+    // --- Plot 2: coherence index ---
+    Plotly.newPlot('metric2', [{
+      x:Array.from({length:30},(_,i)=>i),
+      y:Array.from({length:30},()=>0.9+Math.random()*0.05),
+      mode:'lines',
+      line:{color:'#d4af37'}
+    }], {
+      yaxis:{range:[0.8,1.0],title:'Coherence'},
+      xaxis:{title:'Time Window'},
+      margin:{t:20},
+      paper_bgcolor:'rgba(0,0,0,0)',
+      plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#f9f9f9'}
+    }, {displayModeBar:false});
+
+    // --- Plot 3: false positives ---
+    Plotly.newPlot('metric3', [{
+      x:['Before','After'],
+      y:[100,53],
+      type:'bar',
+      marker:{color:['#f66','#4cd1f3']}
+    }], {
+      yaxis:{title:'Alerts'},
+      margin:{t:20},
+      paper_bgcolor:'rgba(0,0,0,0)',
+      plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#f9f9f9'}
+    }, {displayModeBar:false});
+
+    // --- Plot 4: explainability delta ---
+    Plotly.newPlot('metric4', [{
+      x:['Baseline','Post-Integration'],
+      y:[0.68,0.92],
+      type:'bar',
+      marker:{color:['#999','#d4af37']}
+    }], {
+      yaxis:{range:[0.5,1.0],title:'Transparency Score'},
+      margin:{t:20},
+      paper_bgcolor:'rgba(0,0,0,0)',
+      plot_bgcolor:'rgba(0,0,0,0)',
+      font:{color:'#f9f9f9'}
+    }, {displayModeBar:false});
+  </script>
+</body>
+</html>

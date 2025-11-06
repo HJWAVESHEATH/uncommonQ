@@ -1,0 +1,166 @@
+<section class="gauge-section">
+  <h2 class="section-title">Governance Readiness Gauge</h2>
+  <p class="section-sub">
+    Five quick questions to gauge the coherence and accountability of your model governance.
+  </p>
+
+  <div id="quizCard" class="quiz-card">
+    <h3 id="questionText"></h3>
+    <div id="options"></div>
+    <button id="nextBtn" class="btn gold" disabled>Next</button>
+  </div>
+
+  <div id="resultCard" class="result-card" style="display:none;">
+    <div id="gauge"></div>
+    <div id="scoreText"></div>
+    <button id="advBtn" class="btn cyan" style="display:none;">Advanced Round</button>
+  </div>
+
+  <div id="advCard" class="result-card" style="display:none;">
+    <h3>Advanced Round</h3>
+    <p id="advText"></p>
+    <button id="resetBtn" class="btn gold">Restart</button>
+  </div>
+</section>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+/* ======================================================
+   Hjermstad Quant • Governance Readiness Gauge (v2)
+   ------------------------------------------------------
+   - 5 base questions
+   - Adaptive advanced round based on score
+   - Matched site palette and typography
+====================================================== */
+
+const questions = [
+  {
+    text: "Do you maintain version control for models or datasets?",
+    answers: [
+      {label:"Yes, every model and dataset",score:20},
+      {label:"Partially, some models only",score:10},
+      {label:"No version control yet",score:0}
+    ]
+  },
+  {
+    text: "How often are models revalidated?",
+    answers:[
+      {label:"Continuously / automated",score:20},
+      {label:"Quarterly",score:10},
+      {label:"Rarely or never",score:0}
+    ]
+  },
+  {
+    text: "Who signs off on model performance before deployment?",
+    answers:[
+      {label:"Independent validation team",score:20},
+      {label:"Model developers themselves",score:10},
+      {label:"No formal sign-off",score:0}
+    ]
+  },
+  {
+    text: "Are model outputs explainable to non-technical stakeholders?",
+    answers:[
+      {label:"Yes, clear documentation & visuals",score:20},
+      {label:"Partially, some models are explained",score:10},
+      {label:"Not yet, it’s opaque",score:0}
+    ]
+  },
+  {
+    text: "Do you monitor drift and performance degradation over time?",
+    answers:[
+      {label:"Yes, automated dashboards",score:20},
+      {label:"Manual checks occasionally",score:10},
+      {label:"Not currently monitored",score:0}
+    ]
+  }
+];
+
+let qIndex = 0, totalScore = 0;
+const qText = document.getElementById("questionText");
+const opts = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+const quizCard = document.getElementById("quizCard");
+const resultCard = document.getElementById("resultCard");
+const advBtn = document.getElementById("advBtn");
+const advCard = document.getElementById("advCard");
+const advText = document.getElementById("advText");
+const scoreText = document.getElementById("scoreText");
+
+function renderQuestion(){
+  const q = questions[qIndex];
+  qText.textContent = q.text;
+  opts.innerHTML="";
+  q.answers.forEach(a=>{
+    const b=document.createElement("button");
+    b.textContent=a.label;
+    b.className="option-btn";
+    b.onclick=()=>{
+      totalScore+=a.score;
+      nextBtn.disabled=false;
+      document.querySelectorAll(".option-btn").forEach(btn=>btn.classList.remove("selected"));
+      b.classList.add("selected");
+    };
+    opts.appendChild(b);
+  });
+  nextBtn.disabled=true;
+}
+renderQuestion();
+
+nextBtn.onclick=()=>{
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{quizCard.style.display="none";showResult();}
+};
+
+function showResult(){
+  const pct=(totalScore/(questions.length*20))*100;
+  resultCard.style.display="block";
+  let label,color;
+  if(pct<40){label="Reactive";color="#f66";}
+  else if(pct<70){label="Evolving";color="#f9c74f";}
+  else{label="Coherent";color="#4cd1f3";}
+  scoreText.innerHTML=
+    `<p>Your Governance Readiness Score: <strong>${pct.toFixed(0)}%</strong> <span>(${label})</span></p>`;
+  Plotly.newPlot("gauge",[{
+    type:"indicator",mode:"gauge+number",value:pct,
+    gauge:{
+      axis:{range:[0,100]},
+      bar:{color:color},
+      steps:[
+        {range:[0,40],color:"rgba(255,102,102,0.3)"},
+        {range:[40,70],color:"rgba(249,199,79,0.3)"},
+        {range:[70,100],color:"rgba(76,209,243,0.3)"}
+      ]
+    }
+  }],{
+    paper_bgcolor:"rgba(0,0,0,0)",
+    plot_bgcolor:"rgba(0,0,0,0)",
+    margin:{t:20,b:20,l:20,r:20},
+    font:{color:"#f9f9f9"}
+  },{displayModeBar:false});
+
+  advBtn.style.display="inline-block";
+  advBtn.onclick=()=>showAdvanced(label);
+}
+
+function showAdvanced(label){
+  resultCard.style.display="none";
+  advCard.style.display="block";
+  let msg="";
+  if(label==="Reactive"){
+    msg=`Your systems are largely manual or undocumented.
+    Start by introducing lightweight version control and an automated audit ledger.
+    Small steps toward reproducibility create exponential clarity.`;
+  }else if(label==="Evolving"){
+    msg=`You’ve built core processes but governance isn’t yet continuous.
+    Consider integrating automated validation triggers and drift dashboards.`;
+  }else{
+    msg=`Your governance is coherent and adaptive.
+    Explore deeper integration—link audit logs to performance KPIs and executive dashboards for full-cycle accountability.`;
+  }
+  advText.textContent=msg;
+}
+document.getElementById("resetBtn").onclick=()=>window.location.reload();
+</script>
+

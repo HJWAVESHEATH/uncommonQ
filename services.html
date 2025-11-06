@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services & Engagement | Hjermstad Quant</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <canvas id="resonantGrid"></canvas>
+
+  <header class="navbar">
+    <div class="nav-brand">HJERMSTAD<span>QUANT</span></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="portfolio/index.html">Portfolio</a>
+      <a href="insights/ai-with-accountability.html">Insights</a>
+      <a href="about.html">About</a>
+      <a href="services.html" class="active">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button id="themeToggle" aria-label="toggle theme">☀️</button>
+  </header>
+
+  <section class="services-hero">
+    <h1>Engage With Hjermstad Quant</h1>
+    <p>Turning analytical discipline into measurable business performance.</p>
+  </section>
+
+  <section class="services-body">
+    <div class="service-card">
+      <h2>Model Validation & Audit</h2>
+      <p>Independent testing, governance documentation, and reproducibility reporting for machine-learning and financial models.</p>
+      <ul>
+        <li>Automated diagnostics dashboards</li>
+        <li>Audit-trail verification & compliance scorecards</li>
+        <li>Turnaround optimization</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <h2>Analytics Architecture</h2>
+      <p>Design and deployment of scalable data pipelines and monitoring systems.</p>
+      <ul>
+        <li>Process mapping and efficiency analysis</li>
+        <li>Custom visualization suites</li>
+        <li>Governance-ready automation</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <h2>Research & Licensing</h2>
+      <p>Exploration and licensing of proprietary resonance-based metrics and validation frameworks.</p>
+      <ul>
+        <li>Joint R&D projects</li>
+        <li>IP evaluation and integration</li>
+        <li>White-label reporting tools</li>
+      </ul>
+    </div>
+
+    <div id="valueFlow" class="plot"></div>
+
+    <p class="cta">To discuss collaboration or request a proposal, visit the <a href="contact.html">contact page</a>.</p>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Brandon Hjermstad • Quantitative Systems Architect</p>
+  </footer>
+
+  <script src="assets/js/grid-animation.js"></script>
+  <script src="assets/js/theme-toggle.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // --- Simple Sankey-like diagram of value creation ---
+    const data = [{
+      type: "sankey",
+      orientation: "h",
+      node: {
+        pad: 15,
+        thickness: 20,
+        line: { color: "rgba(255,255,255,0.1)", width: 1 },
+        label: [
+          "Client Data",
+          "Hjermstad Quant Process",
+          "Validated Insight",
+          "Operational Clarity",
+          "Business Impact"
+        ],
+        color: ["#4cd1f3","#68e0c6","#d4af37","#9b7fe3","#4cd1f3"]
+      },
+      link: {
+        source: [0,1,2,3],
+        target: [1,2,3,4],
+        value: [5,4,3,3],
+        color: "rgba(212,175,55,0.3)"
+      }
+    }];
+
+    Plotly.newPlot("valueFlow", data, {
+      title: "Flow of Value Creation",
+      margin: {t:40,l:10,r:10,b:10},
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      font: {color: "#f9f9f9"}
+    }, {displayModeBar:false});
+  </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<section class="gauge-section">
+  <h2 class="section-title">AI Transparency Gauge</h2>
+  <p class="section-sub">
+    A 5-question pulse check on how clearly your AI models can be explained,
+    audited, and trusted.
+  </p>
+
+  <div id="quizCardT" class="quiz-card">
+    <h3 id="questionTextT"></h3>
+    <div id="optionsT"></div>
+    <button id="nextBtnT" class="btn gold" disabled>Next</button>
+  </div>
+
+  <div id="resultCardT" class="result-card" style="display:none;">
+    <div id="gaugeT"></div>
+    <div id="scoreTextT"></div>
+    <button id="advBtnT" class="btn cyan" style="display:none;">Advanced Round</button>
+  </div>
+
+  <div id="advCardT" class="result-card" style="display:none;">
+    <h3>Advanced Round</h3>
+    <p id="advTextT"></p>
+    <button id="resetBtnT" class="btn gold">Restart</button>
+  </div>
+</section>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+/* ======================================================
+   Hjermstad Quant • AI Transparency Gauge (Lite)
+====================================================== */
+const qT = [
+  {
+    text:"Can you trace the origin and ownership of your training data?",
+    answers:[
+      {label:"Yes, fully documented",score:20},
+      {label:"Partially known",score:10},
+      {label:"No, unknown or aggregated",score:0}
+    ]
+  },
+  {
+    text:"Are model decisions explainable to non-technical reviewers?",
+    answers:[
+      {label:"Yes, interpretable outputs",score:20},
+      {label:"Sometimes, depending on model",score:10},
+      {label:"Not explainable",score:0}
+    ]
+  },
+  {
+    text:"Do you log model inferences for audit or dispute resolution?",
+    answers:[
+      {label:"Yes, structured logs retained",score:20},
+      {label:"Some logs kept",score:10},
+      {label:"No inference logging",score:0}
+    ]
+  },
+  {
+    text:"When bias is detected, how is it addressed?",
+    answers:[
+      {label:"Formal mitigation pipeline",score:20},
+      {label:"Manual correction only",score:10},
+      {label:"Not currently addressed",score:0}
+    ]
+  },
+  {
+    text:"Is model documentation accessible to stakeholders?",
+    answers:[
+      {label:"Yes, transparent and updated",score:20},
+      {label:"Internal only",score:10},
+      {label:"Not documented",score:0}
+    ]
+  }
+];
+
+let qi=0,total=0;
+const qTxt=document.getElementById("questionTextT"),
+      opts=document.getElementById("optionsT"),
+      next=document.getElementById("nextBtnT"),
+      quiz=document.getElementById("quizCardT"),
+      res=document.getElementById("resultCardT"),
+      advBtn=document.getElementById("advBtnT"),
+      adv=document.getElementById("advCardT"),
+      advText=document.getElementById("advTextT"),
+      sTxt=document.getElementById("scoreTextT");
+
+function renderQT(){
+  const q=qT[qi];
+  qTxt.textContent=q.text;
+  opts.innerHTML="";
+  q.answers.forEach(a=>{
+    const b=document.createElement("button");
+    b.textContent=a.label;
+    b.className="option-btn";
+    b.onclick=()=>{
+      total+=a.score;
+      next.disabled=false;
+      document.querySelectorAll("#optionsT .option-btn").forEach(x=>x.classList.remove("selected"));
+      b.classList.add("selected");
+    };
+    opts.appendChild(b);
+  });
+  next.disabled=true;
+}
+renderQT();
+
+next.onclick=()=>{
+  qi++;
+  if(qi<qT.length){renderQT();}
+  else{quiz.style.display="none";showResT();}
+};
+
+function showResT(){
+  const pct=(total/(qT.length*20))*100;
+  res.style.display="block";
+  let label,color;
+  if(pct<40){label="Opaque";color="#f66";}
+  else if(pct<70){label="Partial";color="#f9c74f";}
+  else{label="Transparent";color="#4cd1f3";}
+  sTxt.innerHTML=`<p>Your Transparency Score: <strong>${pct.toFixed(0)}%</strong> (${label})</p>`;
+  Plotly.newPlot("gaugeT",[{
+    type:"indicator",mode:"gauge+number",value:pct,
+    gauge:{
+      axis:{range:[0,100]},
+      bar:{color:color},
+      steps:[
+        {range:[0,40],color:"rgba(255,102,102,0.3)"},
+        {range:[40,70],color:"rgba(249,199,79,0.3)"},
+        {range:[70,100],color:"rgba(76,209,243,0.3)"}
+      ]
+    }
+  }],{
+    paper_bgcolor:"rgba(0,0,0,0)",
+    plot_bgcolor:"rgba(0,0,0,0)",
+    margin:{t:20,b:20,l:20,r:20},
+    font:{color:"#f9f9f9"}
+  },{displayModeBar:false});
+  advBtn.style.display="inline-block";
+  advBtn.onclick=()=>showAdvT(label);
+}
+
+function showAdvT(label){
+  res.style.display="none";adv.style.display="block";
+  let msg="";
+  if(label==="Opaque"){
+    msg=`Your AI systems operate as black boxes.
+    Start capturing basic metadata—training data sources, key parameters, and decision logs.
+    Transparency begins with traceability.`;
+  }else if(label==="Partial"){
+    msg=`You’ve taken steps toward visibility.
+    Formalize bias-mitigation and establish clear audit logging.
+    Aim for documentation that anyone can interpret.`;
+  }else{
+    msg=`Your AI is functionally transparent.
+    Next: embed explainability into governance—real-time dashboards, stakeholder feedback loops, and external review readiness.`;
+  }
+  advText.textContent=msg;
+}
+document.getElementById("resetBtnT").onclick=()=>window.location.reload();
+</script>
