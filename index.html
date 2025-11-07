@@ -64,6 +64,13 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script>
+  if (window.location.hostname.includes('github.io')) {
+    document.write('<base href="/uncommonQ/">');
+  }
+</script>
+
 </body>
 </html>
+
 
